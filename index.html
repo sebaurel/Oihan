@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>le tap bob</title>
+    <link rel="stylesheet" href="css/main.css" type="text/css">
+    <script type="text/javascript" src="js/jquery-3.1.1.slim.min.js"></script>
+</head>
+<body>
+    <div id="Info">
+        <h1>Le jeu du tap BOB d'Oihan</h1>
+        <p>
+            <span id="Score">Score : <b>0</b></span>
+            <span id="Niveau">Niveau : <b>0</b></span>
+            <span id="Vie">Vie : <b>0</b></span>
+        </p>
+    </div>
+    <ul id="Jeu"></ul>
+    <script type="text/javascript">
+        $(function(){
+            niveau = 1;
+            vie = 3;
+            score = 0;
+            tapbob();
+            function tapbob(){
+                //console.log(tapbob);
+                $('#Vie > b').html(vie);
+                $('#Score > b').html(score);
+                $('#Niveau > b').html(niveau);
+                var largeur_fenetre = $(window).width(),
+                    hauteur_fenetre = $(window).height(),
+                    hauteur_info = $('#Info').height();
+                if(largeur_fenetre > hauteur_fenetre - hauteur_info){
+                    tableau_largeur = Math.floor(hauteur_fenetre - hauteur_info);
+                }else{
+                    tableau_largeur = Math.floor(largeur_fenetre);
+                }
+                $('#Jeu').css('width',tableau_largeur);
+
+                var tableau = '',
+                    lignes = niveau + 2,
+                    carres = lignes * lignes,
+                    carre_largeur = Math.floor(tableau_largeur / lignes),
+                    carrebob = Math.floor(Math.random() * carres);
+                TimeOut = setTimeout(function(){
+                    tapbob();
+                } ,1500);//fin settimeout 1500
+                for(i=0;i<carres;i++){
+                    tableau += '<li';
+                    if(i==carrebob){
+                    tableau += ' class="Bob"';
+                    }
+                    tableau += '></li>'
+                }//fin for
+                $('#Jeu').html(tableau);
+                $('#Jeu > li').each(function(){
+                    $(this).css({
+                        "width": carre_largeur,
+                        "height": carre_largeur
+                    });
+                    if($(this).hasClass('Bob')){
+                       
+                        $(this).on('click', function(){
+                            clearTimeout(TimeOut);
+                            score++;
+                            if((score%5)==0){
+                                niveau++;
+                            }
+                            tapbob();
+                        });
+                    }else{
+                        $(this).on('click', function(){
+                            clearTimeout(TimeOut);
+                            vie--;
+                            if(vie<0){
+                                alert('Perdu');
+                                vie = 3;
+                                score = 0;
+                                niveau = 1;
+                            }
+                            tapbob();
+                        });
+                    }
+                });//fin each
+            }//fin function tapbob
+        });//fin general
+    </script>
+</body>
+</html>
